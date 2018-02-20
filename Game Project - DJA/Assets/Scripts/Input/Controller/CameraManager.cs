@@ -9,10 +9,13 @@ namespace SA
     {
         public float followSpeed = 9;
         public float mouseSpeed = 2;
-        public float controllerSpeed = 7;
+        public float controllerSpeed = 2;
+        [HideInInspector]
         public Transform target;
-        Transform pivot;
-        Transform camTransform;
+        [HideInInspector]
+        public Transform pivot;
+
+        public Transform camTransform;
 
         float turnSmoothing = 0.1f;
         public float minAngle = -35;

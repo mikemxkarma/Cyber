@@ -11,7 +11,7 @@ namespace SA
         StateManager states;
         CameraManager camManager;
         float delta;
-
+        bool runInput;
 
         void Start()
         {
@@ -26,12 +26,15 @@ namespace SA
        {
             delta = Time.fixedDeltaTime;
            GetInput();
+            UpdateStates();
+            states.FixedTick(delta);
+            camManager.Tick(delta);
         }
        
         void Update()
         {
             delta = Time.deltaTime;
-            camManager.Tick(delta);
+            states.Tick(delta);
             
         }
 
@@ -39,13 +42,30 @@ namespace SA
         {
             vertical = Input.GetAxis("Vertical");
             horizontal = Input.GetAxis("Horizontal");
+            runInput = Input.GetButton("RunInput");
         }
 
         void UpdateStates()
         {
             states.horizontal = horizontal;
             states.vertical = vertical;
-            states.Tick(Time.deltaTime);          
+
+            //move on base camara angle
+            Vector3 v = vertical * camManager.transform.forward;//orientation of were camara is looking
+            Vector3 h = horizontal * camManager.transform.right;//were we want the camara to be
+            states.moveDirection = (v + h).normalized;
+            float m = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
+            states.moveAmount = Mathf.Clamp01(m);//tel if it as movement
+
+            if (runInput)
+            {
+                states.run = (states.moveAmount > 0);            
+            }
+            else
+            {
+                states.run = false;
+            }
+               
         }
     }
 }
