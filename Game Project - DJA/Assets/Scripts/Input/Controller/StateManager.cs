@@ -2,19 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SA { 
+///=================================================================
+///   Namespace:      GameControll
+///   Class:          StateManager
+///   Description:    Handles the Input of Keyboard and Controller.
+///   Date: 20-02-2018
+///   Notes:
+///   Revision History:   
+///=================================================================
+
+namespace GameControll
+{ 
 
 public class StateManager : MonoBehaviour
     {
+        #region Fields    
         [Header("Initialize")]
         public GameObject activeModel;
-
         [Header("Inputs")]
         public Vector3 moveDirection;    
         public float moveAmount;
         public float horizontal;
         public float vertical;
-
         [Header("Stats")]
         public float moveSpeed = 2;
         public float runSpeed = 3.5f;
@@ -24,18 +33,18 @@ public class StateManager : MonoBehaviour
         public bool run;
         public bool onGround;
         public bool lockon;
+
         [HideInInspector]
         public Animator anim;
         [HideInInspector]
         public Rigidbody rigidBody;
-        
-
-
         [HideInInspector]   
         public float delta;
         [HideInInspector]
         public LayerMask ignoreLayers;
+        #endregion
 
+        #region Methods
         public void Init()
         {
             SetupAnimator();
@@ -43,12 +52,11 @@ public class StateManager : MonoBehaviour
             rigidBody.angularDrag = 999;
             rigidBody.drag = 4;
             rigidBody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-
             gameObject.layer = 8;
             ignoreLayers = ~(1 << 9);
-
             anim.SetBool("onGround", true);
         }
+
         void SetupAnimator()
         {
             if (activeModel == null)
@@ -66,23 +74,18 @@ public class StateManager : MonoBehaviour
             if (anim == null)
                 anim = activeModel.GetComponent<Animator>();
             anim.applyRootMotion = false;
-
         }
 
         public void FixedTick(float d)
         {
             delta = d;
-
-            rigidBody.drag = (moveAmount > 0|| onGround==false) ? 0 : 4;
-
-           
+            rigidBody.drag = (moveAmount > 0|| onGround==false) ? 0 : 4;          
           //  if (moveAmount > 0)
           //  {
           //      rigidBody.drag = 0;
           //  }
           //  else
           //      rigidBody.drag = 4;
-
             float targetSpeed = moveSpeed;
             if (run)
                 targetSpeed = runSpeed;
@@ -102,7 +105,6 @@ public class StateManager : MonoBehaviour
             Quaternion tRotation = Quaternion.LookRotation(targetDirection);
             Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tRotation,delta*moveAmount*rotateSpeed);
             transform.rotation = targetRotation;
-
             }
             HandleMovementAnimations();
         }
@@ -111,7 +113,6 @@ public class StateManager : MonoBehaviour
         {
             delta = d;
             onGround = OnGround();
-
             anim.SetBool("onGround", onGround);
         }
 
@@ -137,5 +138,6 @@ public class StateManager : MonoBehaviour
             }
             return r;
         }
-    }
+        #endregion
+    }   
 }

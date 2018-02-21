@@ -2,7 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SA
+///=================================================================
+///   Namespace:      GameControll
+///   Class:          CameraManager
+///   Description:    Handles the Input of Keyboard and Controller.
+///   Date: 20-02-2018
+///   Notes:
+///   Revision History:   
+///=================================================================
+///
+namespace GameControll
 {
 
     public class CameraManager : MonoBehaviour
