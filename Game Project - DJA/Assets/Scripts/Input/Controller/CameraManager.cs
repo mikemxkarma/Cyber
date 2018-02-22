@@ -16,9 +16,9 @@ namespace GameControll
 
     public class CameraManager : MonoBehaviour
     {
-        public float followSpeed = 9;
+        public float followSpeed = 500;
         public float mouseSpeed = 2;
-        public float controllerSpeed = 2;
+        public float controllerSpeed = 20;
         [HideInInspector]
         public Transform target;
         [HideInInspector]
@@ -67,7 +67,7 @@ namespace GameControll
         void FollowTarget(float d)
         {
             float speed = d * followSpeed;
-            Vector3 targetPosition = Vector3.Lerp(transform.position, target.position, d);
+            Vector3 targetPosition = Vector3.Lerp(transform.position, target.position, speed);
             transform.position = targetPosition;
         }
 

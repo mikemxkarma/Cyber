@@ -12,18 +12,19 @@ using UnityEngine;
 ///=================================================================
 
 namespace GameControll
-{ 
+{
 
-public class StateManager : MonoBehaviour
+    public class StateManager : MonoBehaviour
     {
         #region Fields    
         [Header("Initialize")]
         public GameObject activeModel;
         [Header("Inputs")]
-        public Vector3 moveDirection;    
+        public Vector3 moveDirection;
         public float moveAmount;
         public float horizontal;
         public float vertical;
+        public bool rt, rb, lt, lb;
         [Header("Stats")]
         public float moveSpeed = 2;
         public float runSpeed = 3.5f;
@@ -33,12 +34,15 @@ public class StateManager : MonoBehaviour
         public bool run;
         public bool onGround;
         public bool lockon;
+        public bool inAction;
+        public bool canMove;
+
 
         [HideInInspector]
         public Animator anim;
         [HideInInspector]
         public Rigidbody rigidBody;
-        [HideInInspector]   
+        [HideInInspector]
         public float delta;
         [HideInInspector]
         public LayerMask ignoreLayers;
@@ -79,13 +83,21 @@ public class StateManager : MonoBehaviour
         public void FixedTick(float d)
         {
             delta = d;
+          
+
+  
+
+            DetectAction();
+
+            if (inAction)
+            {
+                inAction = !anim.GetBool("canMove");
+                    return;
+            }
+            canMove = anim.GetBool("canMove");
+
             rigidBody.drag = (moveAmount > 0|| onGround==false) ? 0 : 4;          
-          //  if (moveAmount > 0)
-          //  {
-          //      rigidBody.drag = 0;
-          //  }
-          //  else
-          //      rigidBody.drag = 4;
+
             float targetSpeed = moveSpeed;
             if (run)
                 targetSpeed = runSpeed;
@@ -107,6 +119,34 @@ public class StateManager : MonoBehaviour
             transform.rotation = targetRotation;
             }
             HandleMovementAnimations();
+        }
+
+        public void DetectAction()
+        {
+            if (canMove == false)
+                return;
+
+            if (rb == false && rt == false && lt == false && lb == false)
+                return;
+
+            string targetAnim= null;
+
+            if (rb)
+                targetAnim = "oh_attack_1";
+            if (rt)
+                targetAnim = "oh_attack_1";
+            if (lt)
+                targetAnim = "oh_attack_1";
+            if (lb)
+                targetAnim = "oh_attack_1";
+
+            if (string.IsNullOrEmpty(targetAnim))
+                return;
+
+            canMove = false;
+            inAction = true;
+            anim.Play(targetAnim);
+            Debug.print("anim");
         }
 
         public void Tick(float d)

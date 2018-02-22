@@ -22,7 +22,19 @@ namespace GameControll
         StateManager states;
         CameraManager cameraManager;
 
-        bool runInput;
+        bool b_input;
+        bool a_input;
+        bool x_input;
+        bool y_input;
+
+        bool rb_input;
+        bool lb_input;
+        bool rt_input;
+        bool lt_input;
+        float rt_axis;
+        float lt_axis;
+
+
         #endregion
 
         #region Constructors
@@ -55,7 +67,19 @@ namespace GameControll
         {
             vertical = Input.GetAxis("Vertical");
             horizontal = Input.GetAxis("Horizontal");
-            runInput = Input.GetButton("RunInput");
+            b_input = Input.GetButton("b_input");
+            rt_input = Input.GetButton("RT");
+            rt_axis = Input.GetAxis("RT");
+
+            if (rt_axis != 0)
+                rt_input = true;
+
+            lt_input = Input.GetButton("LT");
+            lt_axis = Input.GetAxis("LT");
+
+            if (lt_axis != 0)
+                lt_input = true;
+
         }
 
         void UpdateStates()
@@ -69,10 +93,18 @@ namespace GameControll
             float m = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
             states.moveAmount = Mathf.Clamp01(m);//tel if it as movement
 
-            if (runInput)
+            if (b_input)
+            {
                 states.run = (states.moveAmount > 0);
+            }
             else
+            {
                 states.run = false;
+            }
+            states.rt = rt_input;
+            states.lt = lt_input;
+            states.rb = rb_input;
+            states.lb = lb_input;
         }
         #endregion
     }
