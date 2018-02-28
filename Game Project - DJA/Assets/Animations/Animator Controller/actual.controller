@@ -108,7 +108,7 @@ AnimatorController:
   - serializedVersion: 5
     m_Name: Interaction
     m_StateMachine: {fileID: 1107540167394217978}
-    m_Mask: {fileID: 0}
+    m_Mask: {fileID: 31900000, guid: cbaccd1256e7de74393f54c565f402cd, type: 2}
     m_Motions: []
     m_Behaviours: []
     m_BlendingMode: 0
@@ -141,6 +141,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   boolName: canMove
+  status: 1
+  resetOnExit: 0
+--- !u!114 &114364861459154634
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ec513d6b361fa24ea607c56dd095538, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  boolName: interacting
   status: 1
   resetOnExit: 1
 --- !u!206 &206736539876872412
@@ -471,7 +485,7 @@ AnimatorStateTransition:
   m_PrefabInternal: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 1
+  - m_ConditionMode: 2
     m_ConditionEvent: twoHanded
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
@@ -681,7 +695,7 @@ AnimatorStateTransition:
   m_PrefabInternal: {fileID: 0}
   m_Name: 
   m_Conditions:
-  - m_ConditionMode: 2
+  - m_ConditionMode: 1
     m_ConditionEvent: twoHanded
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
@@ -814,7 +828,8 @@ AnimatorState:
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
-  m_StateMachineBehaviours: []
+  m_StateMachineBehaviours:
+  - {fileID: 114364861459154634}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -1130,7 +1145,7 @@ AnimatorState:
   - {fileID: 1101700996692290408}
   m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
-  m_IKOnFeet: 0
+  m_IKOnFeet: 1
   m_WriteDefaultValues: 1
   m_Mirror: 0
   m_SpeedParameterActive: 0
@@ -1156,7 +1171,7 @@ AnimatorStateMachine:
     m_Position: {x: 300, y: 120, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102670691432161482}
-    m_Position: {x: 371.92566, y: 34.897186, z: 0}
+    m_Position: {x: 300, y: 36, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []
   m_EntryTransitions: []
