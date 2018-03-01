@@ -16,14 +16,15 @@ namespace GameControll
 
     public class CameraManager : MonoBehaviour
     {
+        public bool lockon;
         public float followSpeed = 500;
         public float mouseSpeed = 2;
-        public float controllerSpeed = 20;
-        [HideInInspector]
+        public float controllerSpeed = 20;       
         public Transform target;
+        public Transform lockonTarget;
         [HideInInspector]
         public Transform pivot;
-
+        [HideInInspector]
         public Transform camTransform;
 
         float turnSmoothing = 0.1f;

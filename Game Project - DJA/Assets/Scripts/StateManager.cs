@@ -206,6 +206,7 @@ namespace GameControll
         public void HandlerTwoHanded()
         {
             anim.SetBool("twoHanded",isTwoHanded);
+            Debug.print("Two Handed");
         }
         #endregion
     }   

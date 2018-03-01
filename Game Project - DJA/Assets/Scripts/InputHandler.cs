@@ -69,7 +69,7 @@ namespace GameControll
             horizontal = Input.GetAxis("Horizontal");
             b_input = Input.GetButton("B");
             a_input = Input.GetButton("A");
-            y_input = Input.GetButton("Y");
+            y_input = Input.GetButtonUp("Y");
             x_input = Input.GetButton("X");
             rt_input = Input.GetButton("RT");
             rt_axis = Input.GetAxis("RT");

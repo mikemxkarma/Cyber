@@ -285,6 +285,7 @@
     <Compile Include="Assets\Scripts\AnimatorHook.cs" />
     <Compile Include="Assets\Scripts\BoolHelper.cs" />
     <Compile Include="Assets\Scripts\CameraManager.cs" />
+    <Compile Include="Assets\Scripts\Enemys\EnemyTarget.cs" />
     <Compile Include="Assets\Scripts\InputHandler.cs" />
     <Compile Include="Assets\Scripts\StateManager.cs" />
     <Compile Include="Assets\Scripts\Utility\Debug.cs" />
