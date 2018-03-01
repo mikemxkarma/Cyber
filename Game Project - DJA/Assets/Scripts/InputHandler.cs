@@ -67,7 +67,10 @@ namespace GameControll
         {
             vertical = Input.GetAxis("Vertical");
             horizontal = Input.GetAxis("Horizontal");
-            b_input = Input.GetButton("b_input");
+            b_input = Input.GetButton("B");
+            a_input = Input.GetButton("A");
+            y_input = Input.GetButton("Y");
+            x_input = Input.GetButton("X");
             rt_input = Input.GetButton("RT");
             rt_axis = Input.GetAxis("RT");
 
@@ -79,6 +82,9 @@ namespace GameControll
 
             if (lt_axis != 0)
                 lt_input = true;
+
+            rb_input= Input.GetButton("RB");
+            lb_input = Input.GetButton("LB");
 
         }
 
@@ -105,6 +111,12 @@ namespace GameControll
             states.lt = lt_input;
             states.rb = rb_input;
             states.lb = lb_input;
+
+            if (y_input)
+            {
+                states.isTwoHanded = !states.isTwoHanded;
+                states.HandlerTwoHanded();
+            }
         }
         #endregion
     }
