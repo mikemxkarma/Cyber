@@ -25,20 +25,26 @@ namespace GameControll
         public float horizontal;
         public float vertical;
         public bool rt, rb, lt, lb;
+        public bool isTwoHanded;
+        public bool rollInput;
 
         [Header("Stats")]
         public float moveSpeed = 2;
         public float runSpeed = 3.5f;
         public float rotateSpeed = 5;
         public float toGround = 0.5f;
+        public float rollSpeed = 1;
+        [Header("Other")]
+        public EnemyTarget lockOnTarget;
+        public AnimationCurve roll_curve;
 
         [Header("States")]
         public bool run;
         public bool onGround;
-        public bool lockon;
+        public bool lockOn;
         public bool inAction;
         public bool canMove;
-        public bool isTwoHanded;
+
 
 
         [HideInInspector]
@@ -120,6 +126,11 @@ namespace GameControll
             {
                 return;
             }
+            // a_hook.rootMotionMultiplier = 1;
+            a_hook.CloseRoll();
+            HandleRolls();
+           
+
             anim.applyRootMotion = false;
             rigidBody.drag = (moveAmount > 0|| onGround==false) ? 0 : 4;          
 
@@ -131,19 +142,25 @@ namespace GameControll
             rigidBody.velocity = moveDirection*(targetSpeed*moveAmount);
 
             if (run)
-                lockon = false;
+                lockOn = false;
 
-            if (!lockon)
-            {
-            Vector3 targetDirection = moveDirection;
-            targetDirection.y = 0;
-            if (targetDirection == Vector3.zero)
-                targetDirection = transform.forward;
-            Quaternion tRotation = Quaternion.LookRotation(targetDirection);
-            Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tRotation,delta*moveAmount*rotateSpeed);
-            transform.rotation = targetRotation;
-            }
-            HandleMovementAnimations();
+          
+                Vector3 targetDirection = (lockOn == false)? moveDirection
+                    :lockOnTarget.transform.position - transform.position;
+
+                targetDirection.y = 0;
+                if (targetDirection == Vector3.zero)
+                    targetDirection = transform.forward;
+                Quaternion tRotation = Quaternion.LookRotation(targetDirection);
+                Quaternion targetRotation = Quaternion.Slerp(transform.rotation, tRotation, delta * moveAmount * rotateSpeed);
+                transform.rotation = targetRotation;
+
+            anim.SetBool("lockOn", lockOn);
+
+            if (lockOn == false)
+                HandleMovementAnimations();
+            else
+                HandleLockOnAnimations(moveDirection);        
         }
 
         public void DetectAction()
@@ -180,10 +197,69 @@ namespace GameControll
             anim.SetBool("onGround", onGround);
         }
 
+        void HandleRolls()
+        {
+            if (!rollInput)
+                return;
+
+            float v = vertical;
+            float h = horizontal;
+            v = (moveAmount > 0.3f) ? 1 : 0;
+            h = 0;
+
+
+            /*   if (lockOn == false)
+               {
+                   v = (moveAmount > 0.3f) ? 1:0 ;
+                   h = 0;
+               }
+               else
+               {
+                   //eliminate smal amounts of input
+                   if (Mathf.Abs(v) < 0.3f)
+                       v = 0;
+                   if (Mathf.Abs(h) < 0.3f)
+                       h = 0;
+
+               }
+               */
+            if (v != 0)
+            {
+                if (moveDirection == Vector3.zero)
+                    moveDirection = transform.forward;
+                Quaternion targetRot = Quaternion.LookRotation(moveDirection);
+                transform.rotation = targetRot;
+                a_hook.InitForRoll();
+                a_hook.rootMotionMultiplier = rollSpeed;
+            }
+            else
+            {
+                a_hook.rootMotionMultiplier = -5f;
+            }
+           
+
+            anim.SetFloat("vertical", v);
+            anim.SetFloat("horizontal", h);
+            canMove = false;
+            inAction = true;
+            anim.CrossFade("Rolls", 0.2f);
+            a_hook.InitForRoll();
+        }
+
         void HandleMovementAnimations()
         {
             anim.SetBool("run", run);
             anim.SetFloat("vertical", moveAmount,0.4f,delta);
+        }
+
+        void HandleLockOnAnimations(Vector3 moveDirection)
+        {
+            Vector3 relativeDir = transform.InverseTransformDirection(moveDirection);
+            float h = relativeDir.x;
+            float v = relativeDir.z;
+
+            anim.SetFloat("vertical", v, 0.2f, delta);
+            anim.SetFloat("horizontal", h, 0.2f, delta);
         }
 
         public bool OnGround()

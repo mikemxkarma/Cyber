@@ -34,6 +34,9 @@ namespace GameControll
         float rt_axis;
         float lt_axis;
 
+        bool leftAxis_down;
+        bool rightAxis_down;
+        
 
         #endregion
 
@@ -86,6 +89,7 @@ namespace GameControll
             rb_input= Input.GetButton("RB");
             lb_input = Input.GetButton("LB");
 
+            rightAxis_down = Input.GetButtonUp("L");
         }
 
         void UpdateStates()
@@ -99,13 +103,15 @@ namespace GameControll
             float m = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
             states.moveAmount = Mathf.Clamp01(m);//tel if it as movement
 
+            states.rollInput = b_input;
+
             if (b_input)
             {
-                states.run = (states.moveAmount > 0);
+               // states.run = (states.moveAmount > 0);
             }
             else
             {
-                states.run = false;
+               // states.run = false;
             }
             states.rt = rt_input;
             states.lt = lt_input;
@@ -116,6 +122,18 @@ namespace GameControll
             {
                 states.isTwoHanded = !states.isTwoHanded;
                 states.HandlerTwoHanded();
+            }
+
+            if (rightAxis_down)
+            {
+                
+                states.lockOn = !states.lockOn;
+
+                if (states.lockOnTarget==null)
+                    states.lockOn = false;
+
+                cameraManager.lockonTarget = states.lockOnTarget.transform;
+                cameraManager.lockOnMode = states.lockOn;
             }
         }
         #endregion
