@@ -46,7 +46,7 @@ namespace GameControll
             states = GetComponent<StateManager>();
             states.Init();
             cameraManager = CameraManager.singleton;
-            cameraManager.Init(this.transform);
+            cameraManager.Init(states);
         } 
         
         void FixedUpdate()
@@ -132,8 +132,9 @@ namespace GameControll
                 if (states.lockOnTarget==null)
                     states.lockOn = false;
 
-                cameraManager.lockonTarget = states.lockOnTarget.transform;
-                cameraManager.lockOnMode = states.lockOn;
+                cameraManager.lockonTarget = states.lockOnTarget;
+                states.lockOnTransform = cameraManager.lockonTransform;
+                cameraManager.lockOnMode = states.lockOn;         
             }
         }
         #endregion

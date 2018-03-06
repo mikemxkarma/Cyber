@@ -25,23 +25,29 @@ namespace GameControll
         }
 
 
-        public Transform GetTarget()
+        public Transform GetTarget(bool negative = false)
         {
-            int targetIndex = index;
+            if (targets.Count == 0)
+                return transform;          
 
-            if (index < targets.Count - 1)
+            if (negative == false)
             {
-                index++;
+                if (index < targets.Count - 1)
+                    index++;
+                else
+                    index = 0;                                
             }
             else
             {
-                index = 0;
-                targetIndex = 0;
+                if (index <= 0)
+                    index = targets.Count - 1;
+                else
+                    index--;
             }
 
-                return targets[targetIndex];//return target from above33
-        }
-          
+            index = Mathf.Clamp(index, 0, targets.Count);
+            return targets[index];//return target from above33
+        }         
     }
 }
 

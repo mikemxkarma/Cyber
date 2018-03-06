@@ -21,26 +21,32 @@ namespace GameControll
         public float mouseSpeed = 2;
         public float controllerSpeed = 20;       
         public Transform target;
-        public Transform lockonTarget;
+        public EnemyTarget lockonTarget;
+        public Transform lockonTransform;
         [HideInInspector]
         public Transform pivot;
         [HideInInspector]
         public Transform camTransform;
+        StateManager states;
 
         float turnSmoothing = 0.1f;
         public float minAngle = -35;
         public float maxAngle = 35;
         public float lookAngle;
         public float tiltAngle;
+
+        bool usedRightAxis;
+
         public bool lockOnMode;
         float smoothX;
         float smoothY;
         float smoothXvelocity;
         float smoothYvelocity;
 
-        public void Init(Transform t)
+        public void Init(StateManager st)
         {
-            target = t;
+            states = st;
+            target = st.transform;
             camTransform = Camera.main.transform;
             pivot = camTransform.parent;
         }
@@ -54,6 +60,35 @@ namespace GameControll
             float c_v = Input.GetAxis("RightAxis Y");
 
             float targetSpeed = mouseSpeed;
+
+            if (lockonTarget != null)
+            {
+                if (lockonTransform == null)
+                {
+                    lockonTransform = lockonTarget.GetTarget();
+                    states.lockOnTransform = lockonTransform;
+                }
+
+                if (Mathf.Abs(c_h) > 0.6f)
+                {
+                    if (!usedRightAxis)
+                    {
+                        lockonTransform = lockonTarget.GetTarget((c_h > 0));
+                        states.lockOnTransform = lockonTransform;
+                        usedRightAxis = true;
+                    }
+
+                }
+            }
+
+            if (usedRightAxis)
+            {
+                if (Mathf.Abs(c_h) < 0.6f)
+                {
+                    usedRightAxis = false;
+
+                }
+            }
 
             if (c_h != 0 || c_v != 0)//mouse input over keyboard overlap
             {
@@ -88,14 +123,14 @@ namespace GameControll
             tiltAngle -= smoothY * targetSpeed;
             tiltAngle = Mathf.Clamp(tiltAngle, minAngle, maxAngle);
             pivot.localRotation = Quaternion.Euler(tiltAngle, 0, 0);
-   
 
-            if (lockOnMode && lockonTarget!=null)
+
+            if (lockOnMode && lockonTarget != null)
             {
-                Vector3 targetDir = lockonTarget.position - transform.position;
+                Vector3 targetDir = lockonTransform.position - transform.position;
                 targetDir.Normalize();
                 // targetDir.y = 0;
-
+            
                 if (targetDir == Vector3.zero)
                     targetDir = transform.forward;
                 Quaternion targetRot = Quaternion.LookRotation(targetDir);
@@ -103,6 +138,7 @@ namespace GameControll
                 lookAngle = transform.eulerAngles.y;
                 return;
             }
+ 
             lookAngle += smoothX * targetSpeed;
             transform.rotation = Quaternion.Euler(0, lookAngle, 0);//rotate camara Yaxis
 

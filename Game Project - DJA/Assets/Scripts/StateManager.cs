@@ -36,6 +36,7 @@ namespace GameControll
         public float rollSpeed = 1;
         [Header("Other")]
         public EnemyTarget lockOnTarget;
+        public Transform lockOnTransform;
         public AnimationCurve roll_curve;
 
         [Header("States")]
@@ -146,7 +147,10 @@ namespace GameControll
 
           
                 Vector3 targetDirection = (lockOn == false)? moveDirection
-                    :lockOnTarget.transform.position - transform.position;
+                    : (lockOnTransform != null)?
+                    lockOnTransform.transform.position - transform.position
+                    :
+                    moveDirection;
 
                 targetDirection.y = 0;
                 if (targetDirection == Vector3.zero)
