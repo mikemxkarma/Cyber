@@ -36,7 +36,10 @@ namespace GameControll
 
         bool leftAxis_down;
         bool rightAxis_down;
-        
+
+        float b_timer;
+        float rt_timer;
+        float lt_timer;
 
         #endregion
 
@@ -56,12 +59,14 @@ namespace GameControll
             UpdateStates();
             states.FixedTick(delta);
             cameraManager.Tick(delta);
+
         }
        
         void Update()
         {
             delta = Time.deltaTime;
-            states.Tick(delta);        
+            states.Tick(delta);
+            ResetInputNStates();
         }
         #endregion
 
@@ -90,6 +95,10 @@ namespace GameControll
             lb_input = Input.GetButton("LB");
 
             rightAxis_down = Input.GetButtonUp("L");
+
+            if (b_input)
+                b_timer += delta;
+
         }
 
         void UpdateStates()
@@ -102,17 +111,17 @@ namespace GameControll
             states.moveDirection = (v + h).normalized;
             float m = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
             states.moveAmount = Mathf.Clamp01(m);//tel if it as movement
+        
 
-            states.rollInput = b_input;
+            if (b_input && b_timer > 0.5f)
+            {
+                states.run = (states.moveAmount > 0);
+            }
+            if (b_input == false && b_timer > 0 && b_timer < 0.5f)
+                states.rollInput = true;
 
-            if (b_input)
-            {
-               // states.run = (states.moveAmount > 0);
-            }
-            else
-            {
-               // states.run = false;
-            }
+
+         
             states.rt = rt_input;
             states.lt = lt_input;
             states.rb = rb_input;
@@ -137,6 +146,18 @@ namespace GameControll
                 cameraManager.lockOnMode = states.lockOn;         
             }
         }
+
+        void ResetInputNStates()
+        {
+            if (b_input == false)
+                b_timer = 0;
+
+            if (states.rollInput)
+                states.rollInput = false;
+            if (states.run)
+                states.run = false;
+        }
+
         #endregion
     }
 }
